@@ -2,6 +2,17 @@
 searchlight-ui
 ==============
 
+NOTE: This repo has been migrated to be under OpenStack governance.
+
+Please see:
+
+https://github.com/openstack/searchlight-ui
+
+Any changes past March 28, 2016 are experimental.
+
+
+
+
 Horizon panels and libraries for searchlight
 
 * Free software: Apache license
