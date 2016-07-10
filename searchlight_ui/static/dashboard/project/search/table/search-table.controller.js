@@ -35,6 +35,7 @@
     '$timeout',
     'searchPluginResourceTypesFilter',
     'horizon.framework.conf.resource-type-registry.service',
+    'horizon.app.core.openstack-service-api.userSession',
     'horizon.dashboard.project.search.searchlightFacetUtils',
     'horizon.dashboard.project.search.searchlightSearchHelper',
     'horizon.dashboard.project.search.resourceLocator',
@@ -46,6 +47,7 @@
                                  $timeout,
                                  searchPluginResourceTypesFilter,
                                  registry,
+                                 userSession,
                                  searchlightFacetUtils,
                                  searchlightSearchHelper,
                                  resourceLocator,
@@ -63,7 +65,9 @@
     ctrl.defaultResourceTypes = [];
     ctrl.defaultFacets = searchlightFacetUtils.defaultFacets();
     ctrl.registry = registry;
+    ctrl.refresh = searchlightSearchHelper.repeatLastSearchWithLatestSettings;
     ctrl.actionResultHandler = actionResultHandler;
+    ctrl.userSession = {};
 
     //ctrl.isNested;
 
@@ -80,6 +84,11 @@
       } else {
         ctrl.searchFacets = ctrl.defaultFacets;
       }
+
+      userSession.get()
+        .then(function onUserSessionGet(session) {
+          ctrl.userSession = session;
+        });
     }
 
     /*function isNested (input) {

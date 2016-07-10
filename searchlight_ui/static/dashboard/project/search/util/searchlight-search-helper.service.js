@@ -116,15 +116,23 @@
       function decoratedSearchSuccess(response) {
         if (settingsService.settings.polling.enabled) {
           settingsPollster = $timeout(
-            repeatLastSearchWithLatestSettings, settingsService.settings.polling.interval);
+            repeatLastSearchWithLatestSettings, settingsService.settings.polling.getIntervalInMs());
         }
+
+        angular.forEach(response.hits, function (hit) {
+          //This sets up common fields that sometimes differ across projects.
+          hit._source.project_id = hit._source.project_id ||
+            hit._source._tenant_id || hit._source.owner;
+          hit._source.updated_at = hit._source.updated_at || hit._source.created_at;
+        });
+
         queryOptions.onSearchSuccess(response);
       }
     }
 
     function startAdHocPolling(interval, maxTime) {
       stopAdHocPolling();
-      interval = interval ? interval : settingsService.settings.polling.interval;
+      interval = interval ? interval : settingsService.settings.polling.getIntervalInMs();
       adHocPollster = $interval(repeatLastSearchWithLatestSettings, interval);
       if (angular.isNumber(maxTime)) {
         $timeout(stopAdHocPolling, maxTime);
